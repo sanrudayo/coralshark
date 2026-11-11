@@ -18,75 +18,90 @@
 
     body {
       font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #f8f9fa;
+      background-color: #FCDBCB;
       color: #212529;
       line-height: 1.6;
       padding: 40px 20px;
     }
 
-    /* 상단 제목 및 설명 영역 */
+    /* 상단 헤더 영역 */
     header {
       max-width: 1000px;
-      margin: 0 auto 40px auto;
+      margin: 0 auto 50px auto;
       text-align: left;
-      padding: 24px;
-      background-color: #FCDBCB;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      padding: 100px 50px;
+      min-height: 350px;
+      background-color: #FDB2A9;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     header h1 {
-      font-size: 2rem;
-      margin-bottom: 8px;
-      color: #343a40;
+      font-size: 2.8rem;
+      margin-bottom: 16px;
+      color: #ffffff;
+      font-weight: 700;
     }
 
     header p {
-      font-size: 1rem;
-      color: #495057;
-      margin-bottom: 20px;
+      font-size: 1.2rem;
+      color: #ffffff;
+      opacity: 0.85; /* 헤더 설명글도 약간 부드럽게 */
+      margin-bottom: 40px;
     }
 
     /* 네비게이션 버튼 영역 */
     .nav-buttons {
       display: flex;
-      gap: 10px;
+      gap: 24px;
     }
 
     .nav-btn {
-      display: inline-block;
-      padding: 8px 18px;
-      background-color: #ffffff;
-      color: #343a40;
+      color: #ffffff;
       text-decoration: none;
-      font-weight: 600;
-      font-size: 0.95rem;
-      border-radius: 6px;
-      transition: background-color 0.2s ease, transform 0.1s ease;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 4px 0;
+      position: relative;
+      transition: opacity 0.2s ease;
     }
 
     .nav-btn:hover {
-      background-color: #f1f3f5;
-      transform: translateY(-1px);
+      opacity: 0.7;
+      text-decoration: underline;
     }
 
     /* 콘텐츠 섹션 공통 스타일 */
     .content-section {
       max-width: 1000px;
-      margin: 0 auto 60px auto;
-      scroll-margin-top: 20px;
+      margin: 0 auto 70px auto;
+      scroll-margin-top: 30px;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
     }
 
     .section-title {
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-      padding-bottom: 8px;
-      border-bottom: 2px solid #dee2e6;
+      font-size: 1.8rem;
+      margin-bottom: 4px;
       color: #343a40;
     }
 
-    /* 이미지 그리드 영역 */
+    /* 각 섹션 소제목 스타일 (반투명 적용) */
+    .section-subtitle {
+      font-size: 0.95rem;
+      color: #6c757d;
+      opacity: 0.75; /* 투명도 부여 */
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #f1f3f5;
+    }
+
+    /* 갤러리 그리드 영역 (설정, 짤 전용) */
     .gallery-container {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -100,7 +115,7 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
-      aspect-ratio: 1 / 1; /* 정사각형 썸네일 유지 */
+      aspect-ratio: 1 / 1;
     }
 
     .gallery-item:hover {
@@ -111,11 +126,44 @@
     .gallery-item img {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* 비율이 다른 사진도 깔끔하게 채움 */
+      object-fit: cover;
       display: block;
     }
 
-    /* 클릭 시 나타나는 확대 모달(라이트박스) */
+    /* 시트지 전용 컨테이너 (원본 크기 출력) */
+    .sheet-container {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      align-items: flex-start;
+    }
+
+    .sheet-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      max-width: 100%;
+    }
+
+    .sheet-item img {
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      display: block;
+    }
+
+    /* 시트지 아래 설명 글귀 (반투명 적용) */
+    .sheet-label {
+      margin-top: 10px;
+      font-weight: 600;
+      color: #495057;
+      opacity: 0.7; /* 투명도 부여 */
+      font-size: 0.95rem;
+    }
+
+    /* 클릭 시 나타나는 확대 모달(라이트박스 - 설정/짤 전용) */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -161,7 +209,7 @@
     .modal-image-wrapper img {
       max-width: 100%;
       max-height: 70vh;
-      object-fit: contain; /* 확대본은 원본 비율 그대로 표시 */
+      object-fit: contain;
     }
 
     .modal-description {
@@ -196,14 +244,14 @@
 </head>
 <body>
 
-  <!-- 상단 제목, 설명 및 이동 버튼 -->
+  <!-- 상단 제목, 설명 및 네비게이션 링크 -->
   <header>
     <h1>나의 사진 백업 공간</h1>
     <p>일상과 여행의 순간들을 기록하고 보관하는 개인 아카이브입니다.</p>
     <nav class="nav-buttons">
       <a href="#settings" class="nav-btn">설정</a>
       <a href="#sheet" class="nav-btn">시트지</a>
-      <a href="#memes" class="nav-btn">짤</a>
+      <a href="#images" class="nav-btn">짤</a>
     </nav>
   </header>
 
@@ -211,19 +259,22 @@
     <!-- 1. 설정 섹션 -->
     <section id="settings" class="content-section">
       <h2 class="section-title">설정</h2>
+      <p class="section-subtitle">설정 자료 및 디테일 항목들을 모아둔 공간입니다.</p>
       <div class="gallery-container" id="gallery-settings"></div>
     </section>
 
     <!-- 2. 시트지 섹션 -->
     <section id="sheet" class="content-section">
       <h2 class="section-title">시트지</h2>
-      <div class="gallery-container" id="gallery-sheet"></div>
+      <p class="section-subtitle">캐릭터 시트지 및 메인 참조 자료입니다.</p>
+      <div class="sheet-container" id="gallery-sheet"></div>
     </section>
 
     <!-- 3. 짤 섹션 -->
-    <section id="memes" class="content-section">
+    <section id="images" class="content-section">
       <h2 class="section-title">짤</h2>
-      <div class="gallery-container" id="gallery-memes"></div>
+      <p class="section-subtitle">기타 이미지 및 짤방 보관함입니다.</p>
+      <div class="gallery-container" id="gallery-images"></div>
     </section>
   </main>
 
@@ -240,26 +291,26 @@
 
   <script>
     // ==========================================
-    // 사진 목록 데이터 (category: 'settings', 'sheet', 'memes')
+    // 사진 목록 데이터
     // ==========================================
     const photos = [
       {
         category: "settings",
-        src: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1000",
+        src: "images/commission01.png",
         description: "설정 이미지 1"
       },
       {
         category: "sheet",
-        src: "images/commision001.jpg",
+        src: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1000",
         description: "시트지 이미지 1"
       },
       {
-        category: "memes",
+        category: "images",
         src: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1000",
         description: "짤 이미지 1"
       },
       {
-        category: "memes",
+        category: "images",
         src: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1000",
         description: "짤 이미지 2"
       }
@@ -270,29 +321,48 @@
     const modalDesc = document.getElementById('modalDesc');
     const closeBtn = document.getElementById('closeBtn');
 
-    // 각 카테고리별 갤러리에 아이템 추가
+    // 갤러리 아이템 추가
     photos.forEach((photo) => {
       const container = document.getElementById(`gallery-${photo.category}`);
       if (!container) return;
 
-      const item = document.createElement('div');
-      item.className = 'gallery-item';
+      if (photo.category === 'sheet') {
+        // 시트지 섹션: 원본 크기 출력 & 하단 문구 추가 (클릭 모달 제외)
+        const item = document.createElement('div');
+        item.className = 'sheet-item';
 
-      const img = document.createElement('img');
-      img.src = photo.src;
-      img.alt = photo.description;
-      img.loading = 'lazy';
+        const img = document.createElement('img');
+        img.src = photo.src;
+        img.alt = photo.description;
+        img.loading = 'lazy';
 
-      item.appendChild(img);
+        const label = document.createElement('div');
+        label.className = 'sheet-label';
+        label.textContent = '시트지 (신)';
 
-      // 이미지 클릭 시 모달 열기
-      item.addEventListener('click', () => {
-        modalImg.src = photo.src;
-        modalDesc.textContent = photo.description;
-        modal.classList.add('active');
-      });
+        item.appendChild(img);
+        item.appendChild(label);
+        container.appendChild(item);
+      } else {
+        // 설정 및 짤 섹션: 정사각형 그리드 & 클릭 시 모달 열기
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
 
-      container.appendChild(item);
+        const img = document.createElement('img');
+        img.src = photo.src;
+        img.alt = photo.description;
+        img.loading = 'lazy';
+
+        item.appendChild(img);
+
+        item.addEventListener('click', () => {
+          modalImg.src = photo.src;
+          modalDesc.textContent = photo.description;
+          modal.classList.add('active');
+        });
+
+        container.appendChild(item);
+      }
     });
 
     // 모달 닫기 기능

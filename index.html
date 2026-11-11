@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>나의 사진 백업 아카이브</title>
+  <style>
+    /* 기본 초기화 및 배경 스타일 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #f8f9fa;
+      color: #212529;
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+
+    /* 상단 제목 및 설명 영역 */
+    header {
+      max-width: 1000px;
+      margin: 0 auto 40px auto;
+      text-align: center;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: #343a40;
+    }
+
+    header p {
+      font-size: 1rem;
+      color: #6c757d;
+    }
+
+    /* 이미지 그리드 영역 */
+    .gallery-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .gallery-item {
+      background: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      aspect-ratio: 1 / 1; /* 정사각형 썸네일 유지 */
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* 비율이 다른 사진도 깔끔하게 채움 */
+      display: block;
+    }
+
+    /* 클릭 시 나타나는 확대 모달(라이트박스) */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.85);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      max-width: 800px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-image-wrapper {
+      background-color: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-height: 70vh;
+    }
+
+    .modal-image-wrapper img {
+      max-width: 100%;
+      max-height: 70vh;
+      object-fit: contain; /* 확대본은 원본 비율 그대로 표시 */
+    }
+
+    .modal-description {
+      padding: 20px;
+      font-size: 1rem;
+      color: #333;
+      background: #fff;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .close-btn:hover {
+      background: rgba(0, 0, 0, 0.9);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 상단 제목 및 설명 -->
+  <header>
+    <h1>나의 사진 백업 공간</h1>
+    <p>일상과 여행의 순간들을 기록하고 보관하는 개인 아카이브입니다.</p>
+  </header>
+
+  <!-- 이미지 목록이 자동으로 생성될 영역 -->
+  <main class="gallery-container" id="gallery"></main>
+
+  <!-- 클릭 시 뜨는 확대 창 (모달) -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal-content">
+      <button class="close-btn" id="closeBtn" aria-label="닫기">&times;</button>
+      <div class="modal-image-wrapper">
+        <img id="modalImg" src="" alt="확대 이미지">
+      </div>
+      <div class="modal-description" id="modalDesc"></div>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // 사진 목록 데이터 (여기에 사진을 추가/수정하세요)
+    // ==========================================
+    const photos = [
+      {
+        src: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1000",
+        description: "2026년 봄, 호숫가 풍경. 물안개가 걷히기 직전에 찍은 사진."
+      },
+      {
+        src: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1000",
+        description: "산책로 정상에서 내려다본 숲. 바람이 꽤 차가웠던 날."
+      },
+      {
+        src: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1000",
+        description: "여름 휴가 때 방문했던 해안가 마을."
+      },
+      {
+        src: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1000",
+        description: "새벽 등산길에 마주친 구름 바다."
+      }
+    ];
+
+    const gallery = document.getElementById('gallery');
+    const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modalImg');
+    const modalDesc = document.getElementById('modalDesc');
+    const closeBtn = document.getElementById('closeBtn');
+
+    // 갤러리 아이템 렌더링
+    photos.forEach((photo) => {
+      const item = document.createElement('div');
+      item.className = 'gallery-item';
+
+      const img = document.createElement('img');
+      img.src = photo.src;
+      img.alt = photo.description;
+      img.loading = 'lazy'; // 스크롤 시 이미지를 불러와 로딩 속도 개선
+
+      item.appendChild(img);
+
+      // 이미지 클릭 시 모달 열기
+      item.addEventListener('click', () => {
+        modalImg.src = photo.src;
+        modalDesc.textContent = photo.description;
+        modal.classList.add('active');
+      });
+
+      gallery.appendChild(item);
+    });
+
+    // 모달 닫기 기능 (X 버튼 클릭, 배경 클릭, ESC 키)
+    function closeModal() {
+      modal.classList.remove('active');
+      modalImg.src = '';
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('active')) {
+        closeModal();
+      }
+    });
+  </script>
+
+</body>
+</html>
